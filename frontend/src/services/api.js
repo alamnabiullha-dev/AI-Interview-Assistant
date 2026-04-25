@@ -1,11 +1,16 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "http://localhost:880/api"
+    baseURL: "https://ai-interview-assistant-plje.onrender.com/api"
 });
 
 API.interceptors.request.use((req) => {
-    req.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        req.headers.Authorization = `Bearer ${token}`;
+    }
+
     return req;
 });
 
