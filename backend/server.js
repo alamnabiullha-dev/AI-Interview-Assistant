@@ -10,8 +10,17 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+// ✅ FIX 1: Better CORS
+app.use(cors({
+    origin: "*"
+}));
+
 app.use(express.json());
+
+// ✅ OPTIONAL: Test route
+app.get("/", (req, res) => {
+    res.send("API is running 🚀");
+});
 
 // routes
 app.use("/api/resume", resumeRoutes);
@@ -20,8 +29,11 @@ app.use("/api/interview", interviewRoutes);
 // MongoDB
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
+    .catch(err => console.log("MongoDB Error:", err));
 
-app.listen(880, () => {
-    console.log("Server running on 880");
+// ✅ FIX 2: Use dynamic PORT (important for Render)
+const PORT = process.env.PORT || 880;
+
+app.listen(PORT, () => {
+    console.log(`Server running on ${PORT}`);
 });
