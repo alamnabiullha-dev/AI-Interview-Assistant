@@ -1,0 +1,213 @@
+import { useState } from "react";
+import API from "../services/api";
+import ChatBox from "../components/ChatBox";
+import ResumeUpload from "../components/ResumeUpload";
+import VoiceControls from "../components/VoiceControls";
+import { speak } from "../components/speak";
+
+export default function Interview() {
+
+    const [resume, setResume] = useState("");
+    const [chats, setChats] = useState([]);
+    const [answer, setAnswer] = useState("");
+    const [index, setIndex] = useState(0);
+    const [interviewId, setInterviewId] = useState("");
+    const [analysis, setAnalysis] = useState(null);
+
+    // START
+    const startInterview = async () => {
+        try {
+            const res = await API.post("/interview/start", {
+                resumeText: resume,
+            });
+
+            const questions = res.data.questions;
+
+            const formatted = questions.map((q) => ({
+                question: q,
+                answer: "",
+            }));
+
+            setChats(formatted);
+            setInterviewId(res.data.interviewId);
+            setIndex(0);
+
+            if (questions.length > 0) speak(questions[0]);
+
+        } catch (err) {
+            console.log("Start Error:", err);
+        }
+    };
+
+    // SEND
+    const sendAnswer = async () => {
+        if (!answer.trim()) return;
+
+        const updated = [...chats];
+        updated[index].answer = answer;
+
+        setChats(updated);
+
+        try {
+            await API.post("/interview/answer", {
+                interviewId,
+                question: updated[index].question,
+                answer,
+            });
+
+            setAnswer("");
+
+            const next = index + 1;
+
+            if (next < chats.length) {
+                setIndex(next);
+                speak(updated[next].question);
+            }
+
+        } catch (err) {
+            console.log("Send Error:", err);
+        }
+    };
+
+    // FINISH
+    const finishInterview = async () => {
+        try {
+            const res = await API.post("/interview/finish", {
+                interviewId,
+            });
+
+            setAnalysis(res.data);
+            speak(`Your score is ${res.data.score} out of 10`);
+
+        } catch (err) {
+            console.log("Finish Error:", err);
+        }
+    };
+
+    const clearChat = () => {
+        setChats([]);
+        setAnswer("");
+        setIndex(0);
+        setInterviewId("");
+        setAnalysis(null);
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100 p-6">
+
+            <div className="max-w-4xl mx-auto space-y-6">
+
+                {/* HEADER */}
+                <div className="text-center">
+                    <h1 className="text-4xl font-extrabold text-indigo-700">
+                        🤖 AI Interview Assistant
+                    </h1>
+                    <p className="text-gray-600 mt-2">
+                        Practice interviews with AI & improve your skills
+                    </p>
+                </div>
+
+                {/* RESUME */}
+                <div className="bg-white p-5 rounded-2xl shadow-lg">
+                    <ResumeUpload setResume={setResume} />
+                </div>
+
+                {/* BUTTONS */}
+                <div className="flex flex-wrap gap-3 justify-center">
+
+                    <button
+                        onClick={startInterview}
+                        className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-xl shadow"
+                    >
+                        🚀 Start
+                    </button>
+
+                    <button
+                        onClick={finishInterview}
+                        className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-xl shadow"
+                    >
+                        🧠 Finish
+                    </button>
+
+                    <button
+                        onClick={clearChat}
+                        className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-xl shadow"
+                    >
+                        🗑 Clear
+                    </button>
+
+                </div>
+
+                {/* CHAT */}
+                <div className="bg-white rounded-2xl shadow-lg p-4 max-h-[400px] overflow-y-auto">
+                    <ChatBox chats={chats} />
+                </div>
+
+                {/* INPUT */}
+                <div className="bg-white p-4 rounded-2xl shadow flex items-center gap-3">
+
+                    <input
+                        value={answer}
+                        onChange={(e) => setAnswer(e.target.value)}
+                        placeholder="Type or speak your answer..."
+                        className="flex-1 border border-gray-300 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    />
+
+                    <VoiceControls setAnswer={setAnswer} />
+
+                    <button
+                        onClick={sendAnswer}
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 rounded-xl"
+                    >
+                        Send
+                    </button>
+
+                </div>
+
+                {/* RESULT */}
+                {analysis && (
+                    <div className="bg-white p-6 rounded-2xl shadow-xl">
+
+                        <h2 className="text-3xl font-bold text-indigo-700">
+                            ⭐ Score: {analysis.score}/10
+                        </h2>
+
+                        <p className="mt-3 text-gray-700">
+                            {analysis.summary}
+                        </p>
+
+                        {/* IMPROVEMENTS */}
+                        <div className="mt-4">
+                            <h3 className="font-bold text-lg text-red-500">
+                                📌 Improvements
+                            </h3>
+                            <ul className="list-disc ml-5 text-gray-600">
+                                {analysis.improvements?.map((i, idx) => (
+                                    <li key={idx}>{i}</li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* TIPS */}
+                        <div className="mt-4">
+                            <h3 className="font-bold text-lg text-green-600">
+                                📘 Preparation Tips
+                            </h3>
+                            <ul className="list-disc ml-5 text-gray-600">
+                                {analysis.tips?.map((i, idx) => (
+                                    <li key={idx}>{i}</li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="mt-4 text-xl font-semibold">
+                            🧠 Result: {analysis.result}
+                        </div>
+
+                    </div>
+                )}
+
+            </div>
+        </div>
+    );
+}
