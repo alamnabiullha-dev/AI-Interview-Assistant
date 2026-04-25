@@ -3,7 +3,7 @@ import API from "../services/api";
 import ChatBox from "../components/ChatBox";
 import ResumeUpload from "../components/ResumeUpload";
 import VoiceControls from "../components/VoiceControls";
-import { speak } from "../components/speak";
+import { speak } from "../components/Speak";
 
 export default function Interview() {
 
