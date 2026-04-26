@@ -41,8 +41,8 @@ Upload your resume, get AI-generated questions, answer them, and receive feedbac
 
 ## 🌐 Live Demo
 
-🔗 Frontend: https://your-frontend-url.onrender.com
-🔗 Backend API: https://your-backend-url.onrender.com
+🔗 Frontend: https://ai-interview-assistant-1-avm9.onrender.com
+🔗 Backend API: https://ai-interview-assistant-xm2n.onrender.com
 
 ---
 
