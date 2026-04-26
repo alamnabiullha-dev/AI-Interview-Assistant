@@ -117,8 +117,7 @@ npm run dev
 **Nabiullha Alam**
 
 * GitHub: https://github.com/alamnabiullha-dev
-* LinkedIn: https://linkedin.com/in/nabiullha-alam
-
+* LinkedIn: https://www.linkedin.com/in/nabiullha-alam-436499390/
 ---
 
 ## ⭐ Support
