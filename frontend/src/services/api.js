@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-    baseURL: "https://ai-interview-assistant-plje.onrender.com/api"
+    baseURL: "https://ai-interview-assistant-xm2n.onrender.com/api"
 });
 
 API.interceptors.request.use((req) => {
