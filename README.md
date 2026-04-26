@@ -111,11 +111,6 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
-
-(Add your app screenshots here)
-
----
 
 ## 👨‍💻 Author
 
