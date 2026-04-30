@@ -164,12 +164,6 @@ export default function Interview() {
                         Practice interviews with AI & improve your skills
                     </p>
 
-                    <button
-                        onClick={toggleTheme}
-                        className="absolute right-0 top-0 bg-gray-200 dark:bg-gray-700 px-3 py-1 rounded-lg text-xs sm:text-sm"
-                    >
-                        {darkMode ? "☀ Light" : "🌙 Dark"}
-                    </button>
                 </div>
 
                 {/* RESUME */}
