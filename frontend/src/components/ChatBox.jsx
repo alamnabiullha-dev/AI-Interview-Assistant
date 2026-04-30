@@ -10,7 +10,9 @@ export default function ChatBox({ chats, isTyping }) {
 
     return (
         <div className="bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 
-        p-5 h-[450px] overflow-y-auto rounded-2xl shadow-inner space-y-4 border 
+        p-4 sm:p-5 md:p-6 
+        h-[400px] sm:h-[500px] md:h-[600px] 
+        overflow-y-auto rounded-2xl shadow-inner space-y-4 border 
         scrollbar-thin scrollbar-thumb-gray-400 dark:scrollbar-thumb-gray-600">
 
             {chats.map((c, i) => (
