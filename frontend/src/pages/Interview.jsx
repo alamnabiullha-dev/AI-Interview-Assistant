@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import API from "../services/api";
 import ChatBox from "../components/ChatBox";
@@ -63,8 +64,14 @@ export default function Interview() {
     };
 
     const startInterview = async () => {
+
+        // ✅ ADDED: Resume validation
+        if (!resume.trim()) {
+            alert("⚠️ Please upload your resume first");
+            return;
+        }
+
         try {
-            // ✅ Added analyzing message
             setChats([{ question: "📄 Analyzing your resume...", answer: "" }]);
 
             const res = await API.post("/interview/start", {
